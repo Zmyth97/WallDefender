@@ -11,12 +11,12 @@ import java.util.ArrayList;
  * Created by Zmyth97 on 5/5/2015.
  */
 public class Map {
-    private int xTiles = 30;
-    private int yTiles = 20;
+    private int xTiles = 10;
+    private int yTiles = (xTiles/3 * 2);
     private float tileAdjust = 5f;
 
-    private int xAmount;
-    private int yAmount;
+    private float xAmount;
+    private float yAmount;
 
     private int[][] tiles;
     private int[][] walls;
@@ -27,11 +27,11 @@ public class Map {
     private ArrayList<Decor> decorList;
 
     public Map(){
-        int xMinimum = xTiles - (int)( xTiles/3.5);
+        int wallPlacement = xTiles - (xTiles/3);
 
-        xAmount = (int) GameScreen.FRUSTUM_WIDTH/xTiles;
+        xAmount = GameScreen.FRUSTUM_WIDTH/xTiles;
         System.out.println("XAmount: " + xAmount);
-        yAmount = (int)GameScreen.FRUSTUM_HEIGHT/yTiles;
+        yAmount = GameScreen.FRUSTUM_HEIGHT/yTiles;
         System.out.println("YAmount: " + yAmount);
 
         tiles = new int[yTiles][xTiles];
@@ -42,9 +42,9 @@ public class Map {
         wallList = new ArrayList<Wall>();
         decorList = new ArrayList<Decor>();
 
-        addCastle(xMinimum);
-        addMap(xMinimum);
-        addDecor(xMinimum);
+        addCastle(wallPlacement);
+        addMap(wallPlacement);
+        addDecor(wallPlacement);
 
         fillMap();
         fillCastle();
@@ -52,10 +52,10 @@ public class Map {
     }
 
     //3 = wall, 4 = corner
-    private void addCastle(int xMinimum){
-        for(int row = 0; row < walls.length - 1; row++){
-            for(int col = 0; col < walls[row].length - 1; col++){
-                if(col == xMinimum){
+    private void addCastle(int wallPlacement){
+        for(int row = 0; row < walls.length; row++){
+            for(int col = 0; col < walls[row].length; col++){
+                if(col == wallPlacement){
                     if(row == 0 || row == (walls[row].length - 1) || row == (xTiles/2 + 2) || row == (xTiles/2 - 2)){
                         walls[row][col] = 4;
                     } else {
@@ -70,8 +70,8 @@ public class Map {
 
     //1 = Grass, 2 = Stone
     private void addMap(int wallPlacement) {
-        for(int row = 0; row < tiles.length - 1; row++){
-            for(int col = 0; col < tiles[row].length - 1; col++){
+        for(int row = 0; row < tiles.length; row++){
+            for(int col = 0; col < tiles[row].length; col++){
                 if(col < wallPlacement){
                     tiles[row][col] = 1;
                 } else {
@@ -84,8 +84,8 @@ public class Map {
 
     //5 = tall tree, 6 = short tree, 7 = bush, 8 = rock
     private void addDecor(int wallPlacement) {
-        for (int row = 0; row < tiles.length - 1; row++) {
-            for (int col = 0; col < tiles[row].length - 1; col++) {
+        for (int row = 0; row < tiles.length; row++) {
+            for (int col = 0; col < tiles[row].length; col++) {
                 if (col < wallPlacement) {
                     int randomChance = (int)(Math.random() * 12);
                     if(randomChance == 1){
@@ -103,12 +103,12 @@ public class Map {
 
     //1 = Grass, 2 = Stone
     private void fillMap(){
-        for(int row = 0; row < tiles.length - 1; row++){
-            for(int col = 0; col < tiles[row].length - 1; col++){
+        for(int row = 0; row < tiles.length; row++){
+            for(int col = 0; col < tiles[row].length; col++){
                 if(tiles[row][col] == 1){
-                        tileList.add(new Tile(Assets.grassTile, (col * xAmount), (row * yAmount), xAmount, yAmount));
+                        tileList.add(new Tile(Assets.grassTile, Tile.GRASS_TILE, (col * xAmount), (row * yAmount), xAmount, yAmount));
                 } else if(tiles[row][col] == 2){
-                        tileList.add(new Tile(Assets.stoneTile,(col * xAmount), (row * yAmount), xAmount, yAmount));
+                        tileList.add(new Tile(Assets.stoneTile, Tile.STONE_TILE, (col * xAmount), (row * yAmount), xAmount, yAmount));
                 }
             }
         }
@@ -116,12 +116,12 @@ public class Map {
 
     //3 = wall, 4 = corner
     private void fillCastle(){
-        for(int row = 0; row < walls.length - 1; row++){
-            for(int col = 0; col < walls[row].length - 1; col++){
-                if(walls[row][col] == 4){
-                    wallList.add(new Wall(Assets.cornerWall, (col * xAmount), (row * yAmount), xAmount, yAmount));
-                } else if(walls[row][col] == 3){
+        for(int row = 0; row < walls.length; row++){
+            for(int col = 0; col < walls[row].length; col++){
+                if(walls[row][col] == 3){
                     wallList.add(new Wall(Assets.wall,(col * xAmount), (row * yAmount), xAmount, yAmount));
+                } else if(walls[row][col] == 4){
+                    wallList.add(new Wall(Assets.cornerWall, (col * xAmount), (row * yAmount), xAmount, yAmount));
                 }
             }
         }
@@ -129,8 +129,8 @@ public class Map {
 
     //5 = tall tree, 6 = short tree, 7 = bush, 8 = rock
     private void fillDecor(){
-        for(int row = 0; row < decor.length - 1; row++){
-            for(int col = 0; col < decor[row].length - 1; col++){
+        for(int row = 0; row < decor.length; row++){
+            for(int col = 0; col < decor[row].length; col++){
                 if(decor[row][col] == 5){
                     decorList.add(new Decor(Assets.rock, (col * xAmount), (row * yAmount), xAmount, yAmount));
                 } else if(decor[row][col] == 6){
@@ -146,7 +146,8 @@ public class Map {
 
 
     public void drawMap(SpriteBatch gameBatch){
-        for(Tile tile: tileList){
+        for(int pos = tileList.size() - 1; pos >= 0; pos --){
+            Tile tile = tileList.get(pos);
             tile.draw(gameBatch);
         }
     }
