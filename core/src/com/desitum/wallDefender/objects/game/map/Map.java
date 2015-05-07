@@ -11,9 +11,8 @@ import java.util.ArrayList;
  * Created by Zmyth97 on 5/5/2015.
  */
 public class Map {
-    private int xTiles = 10;
+    public static int xTiles = 20;
     private int yTiles = (xTiles/3 * 2);
-    private float tileAdjust = 5f;
 
     private float xAmount;
     private float yAmount;
@@ -56,7 +55,8 @@ public class Map {
         for(int row = 0; row < walls.length; row++){
             for(int col = 0; col < walls[row].length; col++){
                 if(col == wallPlacement){
-                    if(row == 0 || row == (walls[row].length - 1) || row == (xTiles/2 + 2) || row == (xTiles/2 - 2)){
+                    if(row == 0 || row == (walls.length - 1)){
+                        System.out.println("Made Corner at: " + row + col);
                         walls[row][col] = 4;
                     } else {
                         walls[row][col] = 3;
@@ -116,12 +116,12 @@ public class Map {
 
     //3 = wall, 4 = corner
     private void fillCastle(){
-        for(int row = 0; row < walls.length; row++){
-            for(int col = 0; col < walls[row].length; col++){
+        for(int row = walls.length - 1; row > -1; row--){
+            for(int col = walls[row].length - 1; col > -1; col--){
                 if(walls[row][col] == 3){
-                    wallList.add(new Wall(Assets.wall,(col * xAmount), (row * yAmount), xAmount, yAmount));
+                    wallList.add(new Wall(Assets.wall, 3, (col * xAmount), (row * yAmount), xAmount, yAmount));
                 } else if(walls[row][col] == 4){
-                    wallList.add(new Wall(Assets.cornerWall, (col * xAmount), (row * yAmount), xAmount, yAmount));
+                    wallList.add(new Wall(Assets.cornerWall, 4,  (col * xAmount), (row * yAmount), xAmount, yAmount * 1.5f));
                 }
             }
         }

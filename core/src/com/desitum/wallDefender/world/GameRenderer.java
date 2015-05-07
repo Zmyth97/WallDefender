@@ -2,6 +2,7 @@ package com.desitum.wallDefender.world;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.desitum.wallDefender.objects.game.enemies.Enemy;
 import com.desitum.wallDefender.objects.game.map.Map;
 import com.desitum.wallDefender.screens.GameScreen;
 
@@ -33,6 +34,12 @@ public class GameRenderer {
         map.drawMap(gameBatch);
         map.drawCastle(gameBatch);
         map.drawDecor(gameBatch);
+
+        if(world.needToDraw){
+            for(Enemy enemy: world.getEnemiesList()){
+                enemy.draw(gameBatch);
+            }
+        }
 
     }
 

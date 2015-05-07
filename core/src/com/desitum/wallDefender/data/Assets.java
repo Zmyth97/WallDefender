@@ -40,6 +40,11 @@ public class Assets {
     public static Texture treeBush;
     public static Texture treeShort;
 
+    //Enemy Textures
+    public static Texture basicEnemy;
+    public static Texture mediumEnemy;
+    public static Texture heavyEnemy;
+    public static Texture eliteEnemy;
 
     //Misc Textures
     public static BitmapFont textFieldFont;
@@ -76,6 +81,11 @@ public class Assets {
         treeTall = new Texture("game/map/treeTall.png");
         treeBush = new Texture("game/map/treeBush.png");
         treeShort = new Texture("game/map/treeShort.png");
+
+        basicEnemy = new Texture("game/map/enemies/basic.png");
+        mediumEnemy = new Texture("game/map/enemies/medium.png");
+        heavyEnemy = new Texture("game/map/enemies/heavy.png");
+        eliteEnemy = new Texture("game/map/enemies/elite.png");
     }
 
 

@@ -160,7 +160,7 @@ public class MenuScreen implements Screen, MenuInterface {
 
     @Override
     public void playGame() {
-        GameScreen myGameScreen = new GameScreen(wallDefender);
+        //GameScreen myGameScreen = new GameScreen(wallDefender);
         wallDefender.setScreen(new GameScreen(wallDefender));
     }
 

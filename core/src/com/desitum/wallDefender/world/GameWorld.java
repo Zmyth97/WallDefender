@@ -6,11 +6,15 @@ import com.desitum.wallDefender.WallDefender;
 import com.desitum.wallDefender.data.Assets;
 import com.desitum.wallDefender.libraries.animation.MovementAnimator;
 import com.desitum.wallDefender.libraries.interpolation.Interpolation;
+import com.desitum.wallDefender.objects.game.enemies.Enemy;
+import com.desitum.wallDefender.objects.game.enemies.Wave;
 import com.desitum.wallDefender.objects.menu.GUI.PopupButton;
 import com.desitum.wallDefender.objects.menu.GUI.PopupButtonListener;
 import com.desitum.wallDefender.objects.menu.GUI.PopupMenu;
 import com.desitum.wallDefender.objects.menu.GUI.PopupSlider;
 import com.desitum.wallDefender.screens.GameScreen;
+
+import java.util.ArrayList;
 
 /**
  * Created by Zmyth97 on 4/3/2015.
@@ -28,15 +32,43 @@ public class GameWorld implements GameInterface {
 
     private int state = RUNNING;
 
+    private float timeToNextWave;
+    private ArrayList<Enemy> enemiesList;
+    private int waveNumber;
+    public boolean needToDraw;
+
     public GameWorld(WallDefender sl){
         this.wallDefender = sl;
-
+        timeToNextWave = 0;
+        enemiesList = new ArrayList<Enemy>();
+        waveNumber = 1;
+        needToDraw = false;
         setupPopupMenu();
     }
 
     public void update(float delta){
         settingsMenu.update(delta);
 
+        if(timeToNextWave > 0) {
+            timeToNextWave -= delta;
+        }
+        if(timeToNextWave <= 0){
+            Wave wave = new Wave(waveNumber);
+            for(Enemy enemy: wave.getEnemies()){
+                enemiesList.add(enemy);
+            }
+            waveNumber++;
+            needToDraw = true;
+            timeToNextWave = 20;
+
+        }
+        if( enemiesList.size() > 0){
+            for(Enemy enemy: enemiesList){
+                enemy.update(delta);
+            }
+        } else if(enemiesList.size() < 1){
+            needToDraw = false;
+        }
     }
 
 
@@ -125,7 +157,9 @@ public class GameWorld implements GameInterface {
         return settingsMenu;
     }
 
-
+    public ArrayList<Enemy> getEnemiesList(){
+        return enemiesList;
+    }
 
     public void pauseGame(){
         settingsMenu.moveIn();
